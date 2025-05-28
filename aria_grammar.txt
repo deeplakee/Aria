@@ -1,0 +1,122 @@
+
+program        → declaration*
+
+declaration    → funDecl
+               | classDecl
+               | varDecl
+               | statement
+
+funDecl        → "fun" function
+
+function       → IDENTIFIER "(" ( IDENTIFIER ( ","IDENTIFIER )* ( "," "..." IDENTIFIER )? )? ")" block
+
+classDecl      → "class" IDENTIFIER ( ":" IDENTIFIER )?  "{" function* "}"
+
+varDecl        → "var" IDENTIFIER ( "=" expression )? ( "," IDENTIFIER ( "=" expression )? )* ";"
+
+statement      → printStmt
+               | importStmt
+               | ifStmt
+               | whileStmt
+               | forStmt
+               | breakStmt
+               | continueStmt
+               | returnStmt
+               | block
+               | exprStmt
+
+printStmt      → "print" expression ";"
+
+importStmt     → "import" IDENTIFIER ( "as" IDENTIFIER )? ";"
+               | "import" STRING "as" IDENTIFIER ";"
+
+ifStmt         → "if" "(" expression ")" statement ( "else" statement )?
+
+whileStmt      → "while" "(" expression ")" statement
+
+forStmt        → "for" "(" ( varDecl | exprStmt | ";" ) expression? ";" expression? ")" statement
+
+forInStmt      → "for" "(" ( "var" IDENTIFIER "in" expression ")" statement
+
+breakStmt      → "break"";"
+
+continueStmt   → "continue"";"
+
+returnStmt     → "return" expression? ";"
+
+exprStmt       → expression ";"
+
+block          → "{" declaration* "}"
+
+expression     → assignment
+
+assignment     → lvalue "=" assignment
+               | lvalue "+=" assignment
+               | lvalue "-=" assignment
+               | lvalue "*=" assignment
+               | lvalue "/=" assignment
+               | lvalue "%=" assignment
+               | lvalue "++"
+               | lvalue "--"
+               | logic_or
+
+lvalue         → IDENTIFIER 
+               | lproperty
+               | lthis
+
+lproperty      → ( IDENTIFIER | "this" ) ( "." invokeMethod | "." IDENTIFIER | "[" expression "]" | args )+
+
+lthis          → "this" "." IDENTIFIER
+               | "this" "." lproperty
+
+logic_or       → logic_and ( ( "or" | "||" ) logic_and )*
+
+logic_and      → equality ( ( "and" | "&&" ) equality )*
+
+equality       → comparison ( ( "!=" | "==" ) comparison )*
+
+comparison     → term ( ( ">" | ">=" | "<" | "<=" ) term )*
+
+term           → factor ( ( "-" | "+" ) factor )*
+
+factor         → unary ( ( "/" | "*" | "%" ) unary )*
+
+unary          → ( "-" | "!" | "not" | "++" | "--") unary
+               | value
+
+value          → primary | rvalue
+
+rvalue         → IDENTIFIER
+               | rproperty
+               | rthis
+               | super
+
+
+rproperty      → ( IDENTIFIER | this ) ( "." invokeMethod | "." IDENTIFIER | "[" expression "]" | args )+
+
+invokeMethod     → IDENTIFIER args+
+
+rthis          → "this" "." IDENTIFIER
+               | "this" "." rproperty
+
+super          → "super" "." IDENTIFIER args?
+
+args           → "(" ( expression ("," expression )* )? ")"
+
+primary        → NUMBER
+               | visitable
+               | "nil"
+               | "false"
+               | "true"
+               | parenExpr
+
+parenExpr    → "(" expression ")"
+
+listExpr     → "[" ( expression ("," expression )* )? "]"
+
+mapExpr      → "{" ( expression ("," expression )* )? "}"
+
+visitable    → STRING
+             | listExpr
+             | mapExpr
+             | ( STRING | listExpr | mapExpr ) ( "." callMethod | "." IDENTIFIER | "[" expression "]" )+
