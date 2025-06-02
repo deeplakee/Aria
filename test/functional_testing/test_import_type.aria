@@ -1,0 +1,12 @@
+# 测试导入功能和类型系统
+import math as m;
+
+var num1 = m.add(1,2);         # num1 = 3
+var num2 = m.add(-1,num1,-2);  # num2 = 0
+println("num1 is: {} , num2 is: {}.",num1,num2);
+println(m.max(1,2,3,4,num2));
+
+println(m);
+println(typeof(m));
+println(typeof(typeof(m)));
+println(m.add);

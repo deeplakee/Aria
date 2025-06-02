@@ -1,0 +1,13 @@
+# test6
+fun makeBigObject() {
+  var obj = {};
+  for (var i = 1; i <= 1000; i++) {
+    obj["key" + str(i)] = random();
+  }
+  return obj;
+}
+var start = clock();
+for (var i = 1; i <= 10000; i++) {
+  var x = makeBigObject();
+}
+println(clock() - start);

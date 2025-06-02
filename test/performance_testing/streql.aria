@@ -1,0 +1,18 @@
+#test7
+var a = "lzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzylzy";
+var b = "yzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzlyzl";
+
+var start = clock();
+for(var i = 1; i <= 100000; i++){
+	a == b;a == b.reverse();a+b;
+	a == b;a == b.reverse();a+b;
+	a == b;a == b.reverse();a+b;
+	a == b;a == b.reverse();a+b;
+	a == b;a == b.reverse();a+b;
+	a == b;a == b.reverse();a+b;
+	a == b;a == b.reverse();a+b;
+	a == b;a == b.reverse();a+b;
+	a == b;a == b.reverse();a+b;
+	a == b;a == b.reverse();a+b;
+}
+println(clock() - start);

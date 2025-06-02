@@ -1,0 +1,20 @@
+# test2
+class foo {
+	init(x){
+		this.val = x;
+	}
+}
+var start = clock();
+for(var i = 1; i <= 100000; i++){
+	foo(i);
+	foo(i);
+	foo(i);
+	foo(i);
+	foo(i);
+	foo(i);
+	foo(i);
+	foo(i);
+	foo(i);
+	foo(i);
+}
+println(clock() - start);

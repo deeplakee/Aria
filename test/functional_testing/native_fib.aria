@@ -1,0 +1,4 @@
+
+var start = clock();
+println(native_fib(40));
+println(clock() - start);

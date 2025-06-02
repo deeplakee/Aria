@@ -1,0 +1,72 @@
+# test4
+class foo {
+  init() {
+    this.field0 = 1;
+    this.field1 = 1;
+    this.field2 = 1;
+    this.field3 = 1;
+    this.field4 = 1;
+    this.field5 = 1;
+    this.field6 = 1;
+    this.field7 = 1;
+    this.field8 = 1;
+    this.field9 = 1;
+    this.field10 = 1;
+    this.field11 = 1;
+    this.field12 = 1;
+    this.field13 = 1;
+    this.field14 = 1;
+    this.field15 = 1;
+    this.field16 = 1;
+    this.field17 = 1;
+    this.field18 = 1;
+    this.field19 = 1;
+  }
+
+  method0() { return this.field0; }
+  method1() { return this.field1; }
+  method2() { return this.field2; }
+  method3() { return this.field3; }
+  method4() { return this.field4; }
+  method5() { return this.field5; }
+  method6() { return this.field6; }
+  method7() { return this.field7; }
+  method8() { return this.field8; }
+  method9() { return this.field9; }
+  method10() { return this.field10; }
+  method11() { return this.field11; }
+  method12() { return this.field12; }
+  method13() { return this.field13; }
+  method14() { return this.field14; }
+  method15() { return this.field15; }
+  method16() { return this.field16; }
+  method17() { return this.field17; }
+  method18() { return this.field18; }
+  method19() { return this.field19; }
+}
+
+var x = foo();
+var start = clock();
+for(var i = 1; i <= 50000; i++) {
+  x.method0();
+  x.method1();
+  x.method2();
+  x.method3();
+  x.method4();
+  x.method5();
+  x.method6();
+  x.method7();
+  x.method8();
+  x.method9();
+  x.method10();
+  x.method11();
+  x.method12();
+  x.method13();
+  x.method14();
+  x.method15();
+  x.method16();
+  x.method17();
+  x.method18();
+  x.method19();
+}
+println(clock() - start);

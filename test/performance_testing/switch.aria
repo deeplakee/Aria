@@ -1,0 +1,28 @@
+#test10
+class switch{
+	init(start_state){
+		this.state = start_state;
+	}
+	toggle(){
+		this.state = !this.state;
+		return this;
+	}
+	get_state(){
+		return this.state;
+	}
+}
+var x = switch(true);
+var start = clock();
+for(var i = 1; i <= 100000; i++){
+	x.toggle().toggle().get_state();
+	x.toggle().toggle().get_state();
+	x.toggle().toggle().get_state();
+	x.toggle().toggle().get_state();
+	x.toggle().toggle().get_state();
+	x.toggle().toggle().get_state();
+	x.toggle().toggle().get_state();
+	x.toggle().toggle().get_state();
+	x.toggle().toggle().get_state();
+	x.toggle().toggle().get_state();
+}
+println(clock() - start);

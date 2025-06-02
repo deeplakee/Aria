@@ -1,0 +1,20 @@
+println("math is imported");
+
+
+fun add(a,...b){
+	var sum = a;
+	for(var val in b){
+		sum+=val;
+	}
+	return sum;
+}
+
+fun max(a,...b){
+	var max_val = a;
+	for(var val in b){
+		if(val > max_val){
+			max_val = val;
+		}
+	}
+	return max_val;
+}

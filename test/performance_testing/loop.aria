@@ -1,0 +1,7 @@
+# test1
+var start = clock();
+var x = 1;
+for(var i =1;i<=1000000;i++){
+	x = x+1;
+}
+println(clock() - start);

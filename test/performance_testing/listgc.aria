@@ -1,0 +1,13 @@
+# test5
+fun makeBigArray() {
+  var arr = [];
+  for (var i = 1; i <= 1000; i++) {
+    arr.append(random());
+  }
+  return arr;
+}
+var start = clock();
+for (var i = 1; i <= 10000; i++) {
+  var x = makeBigArray();
+}
+println(clock() - start);

@@ -1,0 +1,14 @@
+try{
+	var list = readline().split(",");
+	println("read: {}",list);
+	for(var i = 0; i<list.size(); i++){
+		println(list[i]);
+		if(num(list[i]) < 0) {
+			throw list[i];
+		}
+	}
+} catch(e){
+	println("exception is {}",e);
+}
+
+println("finish");

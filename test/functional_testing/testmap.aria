@@ -1,0 +1,8 @@
+# 测试Map
+var d = {true:1};
+d[true] = false;
+d[-1] = "nihao";
+d["a"] = [1,2,3];
+println(d.pairs());   # [[-1,nihao],[true,false],[a,[1,2,3]]]
+d.remove("a");
+println(d.pairs());   # 
