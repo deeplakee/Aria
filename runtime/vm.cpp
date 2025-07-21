@@ -57,6 +57,12 @@ VM::~VM()
 
 interpretResult VM::interpret(String &source)
 {
+    if (fileName.empty()) {
+        fileName = "__tmp_aria_file__";
+    }
+    if (fileDirectory.empty()) {
+         fileDirectory = getCurrentWorkingDirectory();
+    }
     Compiler compiler{gc};
     ObjFunction *script = compiler.compile(std::move(source));
     if (script == nullptr) {
@@ -87,6 +93,8 @@ interpretResult VM::interpretByLine(String &source)
     reset();
     if (!replMode) {
         replMode = true;
+        fileName = "__tmp_aria_file__";
+        fileDirectory = getCurrentWorkingDirectory();
         globalVarTableForRepl = new ValueHashTable{gc};
         gc->bindGlobalVarsForRepl(globalVarTableForRepl);
     }
@@ -811,7 +819,7 @@ interpretResult VM::run()
             } else {
                 ObjFunction *imported = loadModule(absoluteModulePath, moduleName);
                 if (imported == nullptr) {
-                    return runtimeError(format("Error in import package '{}'", input->chars));
+                    return runtimeError(format("Error in import module '{}'", input->chars));
                 }
                 stack.push(obj_val(imported));
                 module = newObjModule(imported, gc);

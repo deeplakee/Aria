@@ -56,7 +56,13 @@ static void runFile(const char *path)
         std::cerr << e.what() << std::endl << std::endl;
         exit(74);
     }
-    return runString(std::move(source));
+
+    VM vm;
+    interpretResult result = vm.interpret(path,source);
+    if (result == interpretResult::COMPILE_ERROR)
+        exit(65);
+    if (result == interpretResult::RUNTIME_ERROR)
+        exit(70);
 }
 } // namespace aria
 

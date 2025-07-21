@@ -101,6 +101,8 @@ constexpr const char* sourceSuffix = ".aria";
 #undef DEBUG_LOG_GC
 #endif
 
+#define DEBUG_PRINT_IMPORT_MODULE_PATH
+
 } // namespace aria
 
 #endif // COMMON_H
