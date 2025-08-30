@@ -245,6 +245,7 @@ void GC::free_object(Obj *obj)
             free_array<char>(objStr->chars, objStr->length + 1);
         }
         bytesAllocated -= sizeof(ObjString);
+        delete objStr;
         break;
     }
     case objType::LIST: {

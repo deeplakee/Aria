@@ -1,5 +1,6 @@
 #include "disassembler.h"
 
+#include "util/util.h"
 #include "object/objFunction.h"
 
 namespace aria {

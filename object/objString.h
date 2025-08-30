@@ -43,6 +43,8 @@ inline char *as_c_string(Value value)
 
 ObjString *newObjString(const String &str, GC *gc);
 
+ObjString *newObjString(const char* str, GC *gc);
+
 ObjString *newObjString(char ch, GC *gc);
 
 ObjString *newObjString(char *c_str, size_t length, GC *gc);

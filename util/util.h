@@ -1,10 +1,11 @@
 #ifndef UTIL_H
 #define UTIL_H
 
+#include "common.h"
+
+#include <utility>
 #include <cctype>
 #include <concepts>
-
-#include "common.h"
 
 namespace aria {
 
@@ -66,13 +67,7 @@ inline bool isAlphaNum(char ch)
     return isalpha(ch) || isdigit(ch);
 }
 
-template<typename T>
-void swap(T &a, T &b) noexcept
-{
-    T tmep = a;
-    a = b;
-    b = tmep;
-}
+using std::swap;
 
 template<typename T>
 concept PointerType = std::is_pointer_v<T>; // Limit T to be pointer type
@@ -91,6 +86,28 @@ constexpr size_t constexprStrlen(const char *str)
     }
     return len;
 }
+
+template<typename... Args>
+void print(const String &fmt, Args &&...args)
+{
+    // Use std::vformat to format the string
+    String formatted_str = std::vformat(fmt, std::make_format_args(args...));
+
+    // Use std::cout print formatted string
+    cout << formatted_str;
+}
+
+template<typename... Args>
+void println(const String &fmt, Args &&...args)
+{
+    // Use std::vformat to format the string
+    String formatted_str = std::vformat(fmt, std::make_format_args(args...));
+
+    // Use std::cout print formatted string
+    cout << formatted_str << endl;
+}
+
+
 
 } // namespace aria
 

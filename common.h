@@ -41,18 +41,8 @@ using UniquePtr = std::unique_ptr<T>;
 template<typename... Args>
 using Tuple = std::tuple<Args...>;
 
-template<typename... Args>
-void print(const String &fmt, Args &&...args)
-{
-    // Use std::vformat to format the string
-    String formatted_str = std::vformat(fmt, std::make_format_args(args...));
-
-    // Use std::cout print formatted string
-    cout << formatted_str;
-}
-
-constexpr const char* programName = "aria";
-constexpr const char* sourceSuffix = ".aria";
+inline constexpr const char* programName = "aria";
+inline constexpr const char* sourceSuffix = ".aria";
 
 #if defined(__GNUC__) || defined(__clang__)
 #define likely(x) __builtin_expect(!!(x), 1)

@@ -45,6 +45,7 @@ VM::VM()
 VM::~VM()
 {
     delete[] frames;
+    delete[] tryFrames;
     delete globalVarTableForRepl;
     delete nativeVarTable;
     delete modules;

@@ -376,6 +376,28 @@ ObjString *newObjString(const String &str, GC *gc)
     return obj;
 }
 
+ObjString *newObjString(const char *str, GC *gc)
+{
+    const size_t length = strlen(str);
+    uint32_t hash = hashString(str, length);
+    ObjString *interned = gc->getStr(str, length, hash);
+    if (interned != nullptr)
+        return interned;
+#ifdef DEBUG_TRACE_STRING_OBJECT_CREATE
+    print("newObjStr: {} length: {} hash: {} gc: {:p}\n", str, length, hash, toVoidPtr(gc));
+#endif
+    char *newStr = gc->allocate_array<char>(length + 1);
+    memcpy(newStr, str, length);
+    newStr[length] = '\0';
+    ObjString *obj = gc->allocate_object<ObjString>(newStr, length, hash, gc);
+#ifdef DEBUG_LOG_GC
+    print("{:p} allocate {} for ObjString\n", toVoidPtr(obj), sizeof(ObjString));
+#endif
+
+    gc->insertStr(obj);
+    return obj;
+}
+
 ObjString *newObjString(char ch, GC *gc)
 {
     const size_t length = 1;
