@@ -8,11 +8,12 @@
 
 namespace aria {
 
-ObjModule::ObjModule(ObjFunction *_module, GC *gc)
+ObjModule::ObjModule(ObjFunction *_module, GC *_gc)
     : name{_module->name}
     , module{_module->chunk->globalVarTable}
 {
     type = objType::MODULE;
+    gc = _gc;
     _module->chunk->asModule = true;
 }
 

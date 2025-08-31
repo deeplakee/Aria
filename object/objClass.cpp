@@ -13,6 +13,7 @@ ObjClass::ObjClass(ObjString *_name, GC *_gc)
     , initMethod{nullptr}
 {
     type = objType::CLASS;
+    gc = _gc;
 }
 
 ObjClass::~ObjClass() = default;

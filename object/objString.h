@@ -17,6 +17,7 @@ public:
     Value createIterator(GC *gc) override;
     String toString() override;
     String toRawString() override;
+    bool add(Value right) override;
     void blacken(GC *gc) override {}
 
     char *chars;
@@ -43,7 +44,7 @@ inline char *as_c_string(Value value)
 
 ObjString *newObjString(const String &str, GC *gc);
 
-ObjString *newObjString(const char* str, GC *gc);
+ObjString *newObjString(const char *str, GC *gc);
 
 ObjString *newObjString(char ch, GC *gc);
 

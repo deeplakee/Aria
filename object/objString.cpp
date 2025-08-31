@@ -271,6 +271,13 @@ static Value builtin_split(int argCount, Value *args, GC *gc)
     return obj_val(objlist);
 }
 
+static Value builtin___add__(int argCount, Value *args, GC *gc)
+{
+    const ObjString *left = as_objString(args[-1]);
+    const ObjString *right = as_objString(args[0]);
+    return obj_val(concatenateString(left, right, gc));
+}
+
 /////////////////////////////////////////////////////////////////////
 
 ValueHashTable *ObjString::builtinMethod = nullptr;
@@ -280,6 +287,7 @@ ObjString::ObjString(char *_chars, size_t _length, uint32_t _hash, GC *_gc)
     , length{_length}
 {
     type = objType::STRING;
+    gc = _gc;
     hash = _hash;
 }
 
@@ -321,6 +329,14 @@ String ObjString::toRawString()
     return String{chars};
 }
 
+bool ObjString::add(Value right)
+{
+    if (likely(is_objString(right))) {
+        return true;
+    }
+    return false;
+}
+
 static uint32_t hashString(const char *key, const size_t length)
 {
     uint32_t hash = 2166136261u;
@@ -349,6 +365,7 @@ void ObjString::init(GC *gc)
     bindBuiltinMethod(builtinMethod, "ltrim", builtin_ltrim, 0, gc);
     bindBuiltinMethod(builtinMethod, "rtrim", builtin_rtrim, 0, gc);
     bindBuiltinMethod(builtinMethod, "split", builtin_split, 1, gc); // split()
+    bindBuiltinMethod(builtinMethod, "__add__", builtin___add__, 1, gc);
     // todo
     // replace(a,b)
     // join(list)

@@ -10,7 +10,7 @@ class ObjModule : public Obj
 {
 public:
     ObjModule() = delete;
-    ObjModule(ObjFunction *_module, GC *gc);
+    ObjModule(ObjFunction *_module, GC *_gc);
     ~ObjModule() override;
 
     bool getAttribute(ObjString *name, Value &value) override;

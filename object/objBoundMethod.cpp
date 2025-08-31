@@ -13,6 +13,7 @@ ObjBoundMethod::ObjBoundMethod(Value _receiver, ObjFunction *_method, GC *_gc)
     , native_method{nullptr}
 {
     type = objType::BOUND_METHOD;
+    gc = _gc;
 }
 ObjBoundMethod::ObjBoundMethod(Value _receiver, ObjNativeFn *_method, GC *_gc)
     : receiver{_receiver}
@@ -21,6 +22,7 @@ ObjBoundMethod::ObjBoundMethod(Value _receiver, ObjNativeFn *_method, GC *_gc)
     , native_method{_method}
 {
     type = objType::BOUND_METHOD;
+    gc = _gc;
 }
 
 ObjBoundMethod::~ObjBoundMethod() = default;

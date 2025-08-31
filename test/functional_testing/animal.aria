@@ -1,0 +1,22 @@
+class Animal{
+	init(name){
+		this.name = name;
+	}
+	hello(){
+		println("hello");
+	}
+}
+
+class Dog : Animal{
+	init(name){
+		super.init(name);
+	}
+	hello(){
+		println("WangWang");
+	}
+}
+
+var dog = Dog("Bob");
+dog.hello();
+println(dog.name);
+dog.age = 3;

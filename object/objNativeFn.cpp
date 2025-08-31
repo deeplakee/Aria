@@ -20,6 +20,7 @@ ObjNativeFn::ObjNativeFn(
     , acceptsVarargs{acceptsVarargs}
 {
     type = objType::NATIVE_FN;
+    gc = _gc;
 }
 
 ObjNativeFn::~ObjNativeFn() = default;

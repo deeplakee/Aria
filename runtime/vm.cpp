@@ -62,7 +62,7 @@ interpretResult VM::interpret(String &source)
         fileName = "__tmp_aria_file__";
     }
     if (fileDirectory.empty()) {
-         fileDirectory = getCurrentWorkingDirectory();
+        fileDirectory = getCurrentWorkingDirectory();
     }
     Compiler compiler{gc};
     ObjFunction *script = compiler.compile(std::move(source));
@@ -584,18 +584,18 @@ interpretResult VM::run()
             break;
         }
         case opCode::ADD: {
-            if (is_objString(stack.peek(0)) && is_objString(stack.peek(1))) {
-                ObjString *b = as_objString(stack.peek(0));
-                ObjString *a = as_objString(stack.peek(1));
-                ObjString *result = concatenateString(a, b, gc);
+            Value b = stack.peek(0);
+            Value a = stack.peek(1);
+            if (is_number(b) && is_number(a)) {
+                double num_b = as_number(b);
+                double num_a = as_number(a);
                 stack.pop_n(2);
-                stack.push(obj_val(result));
-            } else if (is_number(stack.peek(0)) && is_number(stack.peek(1))) {
-                double b = as_number(stack.pop());
-                double a = as_number(stack.pop());
-                stack.push(number_val(a + b));
+                stack.push(number_val(num_a + num_b));
+            } else if (is_obj(a) && as_obj(a)->add(b)) {
+                invoke(newObjString(overloadingAdd_FunName, gc), 1);
+                frame = &frames[frameCount - 1];
             } else {
-                return runtimeError("Operands must be numbers or strings.");
+                return runtimeError("Invalid Operands in add operation");
             }
             break;
         }

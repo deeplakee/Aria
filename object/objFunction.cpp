@@ -17,6 +17,7 @@ ObjFunction::ObjFunction(FunctionType _funType, GC *_gc)
     , upvalueCount{0}
 {
     type = objType::FUNCTION;
+    gc = _gc;
 }
 
 ObjFunction::ObjFunction(FunctionType _funType, ValueHashTable *_globalVarTable, GC *_gc)
@@ -29,6 +30,7 @@ ObjFunction::ObjFunction(FunctionType _funType, ValueHashTable *_globalVarTable,
     , upvalueCount{0}
 {
     type = objType::FUNCTION;
+    gc = _gc;
 }
 
 ObjFunction::ObjFunction(
@@ -47,6 +49,7 @@ ObjFunction::ObjFunction(
     , upvalueCount{0}
 {
     type = objType::FUNCTION;
+    gc = _gc;
 }
 
 ObjFunction::~ObjFunction() = default;

@@ -11,9 +11,9 @@ class ObjMap:public Obj
 {
     public:
     ObjMap()=delete;
-    explicit ObjMap(GC *gc);
-    ObjMap(ValueHashTable *_map,GC *gc);
-    ObjMap(int count, ValueStack *stack, GC *gc);
+    explicit ObjMap(GC *_gc);
+    ObjMap(ValueHashTable *_map,GC *_gc);
+    ObjMap(int count, ValueStack *stack, GC *_gc);
     ~ObjMap() override;
 
     bool getAttribute(ObjString *name, Value &value) override;

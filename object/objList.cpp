@@ -158,16 +158,18 @@ static Value builtin_equals(int argCount, Value *args, GC *gc)
 
 ValueHashTable *ObjList::builtinMethod = nullptr;
 
-ObjList::ObjList(GC *gc)
-    : list{new ValueArray{gc}}
+ObjList::ObjList(GC *_gc)
+    : list{new ValueArray{_gc}}
 {
     type = objType::LIST;
+    gc = _gc;
 }
 
-ObjList::ObjList(int count, ValueStack *stack, GC *gc)
-    : list{new ValueArray{gc}}
+ObjList::ObjList(int count, ValueStack *stack, GC *_gc)
+    : list{new ValueArray{_gc}}
 {
     type = objType::LIST;
+    gc = _gc;
     int i = count - 1;
     while (i >= 0) {
         list->write(stack->peek(i));
@@ -175,15 +177,17 @@ ObjList::ObjList(int count, ValueStack *stack, GC *gc)
     }
     stack->pop_n(count);
 }
-ObjList::ObjList(int begin, int end, ValueArray *other, GC *gc)
-    : list{new ValueArray{begin, end, other, gc}}
+ObjList::ObjList(int begin, int end, ValueArray *other, GC *_gc)
+    : list{new ValueArray{begin, end, other, _gc}}
 {
     type = objType::LIST;
+    gc = _gc;
 }
-ObjList::ObjList(ValueArray *_list, GC *gc)
+ObjList::ObjList(ValueArray *_list, GC *_gc)
     : list{_list}
 {
     type = objType::LIST;
+    gc = _gc;
 }
 
 ObjList::~ObjList() = default;

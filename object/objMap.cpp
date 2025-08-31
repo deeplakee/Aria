@@ -85,7 +85,7 @@ Value builtin_pairs(int argCount, Value *args, GC *gc)
     for (int i = 0; i < capacity; i++) {
         if (entry[i].isEmpty)
             continue;
-        ObjList *list = objmap->map->createPairList(i,gc);
+        ObjList *list = objmap->map->createPairList(i, gc);
         gc->cache(obj_val(list));
         newList->list->write(obj_val(list));
         gc->releaseCache(1);
@@ -108,22 +108,25 @@ static Value builtin_equals(int argCount, Value *args, GC *gc)
 
 ValueHashTable *ObjMap::builtinMethod = nullptr;
 
-ObjMap::ObjMap(GC *gc)
-    : map{new ValueHashTable{gc}}
+ObjMap::ObjMap(GC *_gc)
+    : map{new ValueHashTable{_gc}}
 {
     type = objType::MAP;
+    gc = _gc;
 }
 
-ObjMap::ObjMap(ValueHashTable *_map, GC *gc)
+ObjMap::ObjMap(ValueHashTable *_map, GC *_gc)
     : map{_map}
 {
     type = objType::MAP;
+    gc = _gc;
 }
 
-ObjMap::ObjMap(int count, ValueStack *stack, GC *gc)
-    : map{new ValueHashTable{gc}}
+ObjMap::ObjMap(int count, ValueStack *stack, GC *_gc)
+    : map{new ValueHashTable{_gc}}
 {
     type = objType::MAP;
+    gc = _gc;
     int i = count * 2 - 1;
     while (i >= 0) {
         map->insert(stack->peek(i), stack->peek(i - 1));

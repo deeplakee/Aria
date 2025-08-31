@@ -1,0 +1,21 @@
+class foo {
+	init(x){
+		this.val = x;
+	}
+
+	set(x){
+		this.val = x;
+		return this;
+	}
+
+	__add__(other){
+		return foo(this.val + other.val);
+	}
+}
+
+var a = foo(1);
+println(a.set(2));
+println(a.val);
+var b = a + foo(3);
+println(b.val);
+

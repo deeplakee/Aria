@@ -26,22 +26,23 @@ static Value builtin_next(int argCount, Value *args, GC *gc)
 
 ValueHashTable *ObjIterator::builtinMethod = nullptr;
 
-ObjIterator::ObjIterator(Iterator *iter)
+ObjIterator::ObjIterator(Iterator *iter, GC *_gc)
     : iter{iter}
 {
     type = objType::ITERATOR;
+    gc = _gc;
 }
 
 ObjIterator::~ObjIterator() = default;
 
 String ObjIterator::toString()
 {
-    return format("<iter {}>",iter->typeString());
+    return format("<iter {}>", iter->typeString());
 }
 
 String ObjIterator::toRawString()
 {
-    return format("<iter {}>",iter->typeString());
+    return format("<iter {}>", iter->typeString());
 }
 
 void ObjIterator::blacken(GC *gc)
@@ -62,7 +63,7 @@ void ObjIterator::init(GC *gc)
 
 ObjIterator *newObjIterator(Iterator *iter, GC *gc)
 {
-    ObjIterator *obj = gc->allocate_object<ObjIterator>(iter);
+    ObjIterator *obj = gc->allocate_object<ObjIterator>(iter, gc);
 #ifdef DEBUG_LOG_GC
     print("{:p} allocate {} for ObjIterator\n", toVoidPtr(obj), sizeof(ObjIterator));
 #endif
@@ -72,7 +73,7 @@ ObjIterator *newObjIterator(Iterator *iter, GC *gc)
 ObjIterator *newObjIterator(ObjList *list, GC *gc)
 {
     auto iter = gc->allocate_iterator<ListIterator>(list);
-    ObjIterator *obj = gc->allocate_object<ObjIterator>(iter);
+    ObjIterator *obj = gc->allocate_object<ObjIterator>(iter, gc);
 #ifdef DEBUG_LOG_GC
     print("{:p} allocate {} for ObjIterator\n", toVoidPtr(obj), sizeof(ObjIterator));
 #endif
@@ -82,7 +83,7 @@ ObjIterator *newObjIterator(ObjList *list, GC *gc)
 ObjIterator *newObjIterator(ObjMap *map, GC *gc)
 {
     auto iter = gc->allocate_iterator<MapIterator>(map);
-    ObjIterator *obj = gc->allocate_object<ObjIterator>(iter);
+    ObjIterator *obj = gc->allocate_object<ObjIterator>(iter, gc);
 #ifdef DEBUG_LOG_GC
     print("{:p} allocate {} for ObjIterator\n", toVoidPtr(obj), sizeof(ObjIterator));
 #endif
@@ -92,7 +93,7 @@ ObjIterator *newObjIterator(ObjMap *map, GC *gc)
 ObjIterator *newObjIterator(ObjString *str, GC *gc)
 {
     auto iter = gc->allocate_iterator<StringIterator>(str);
-    ObjIterator *obj = gc->allocate_object<ObjIterator>(iter);
+    ObjIterator *obj = gc->allocate_object<ObjIterator>(iter, gc);
 #ifdef DEBUG_LOG_GC
     print("{:p} allocate {} for ObjIterator\n", toVoidPtr(obj), sizeof(ObjIterator));
 #endif

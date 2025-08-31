@@ -22,6 +22,13 @@ enum class objType : uint8_t {
     ITERATOR,
 };
 
+inline constexpr const char *overloadingAdd_FunName = "__add__";
+inline constexpr const char *overloadingSub_FunName = "__sub__";
+inline constexpr const char *overloadingMul_FunName = "__mul__";
+inline constexpr const char *overloadingDiv_FunName = "__div__";
+inline constexpr const char *overloadingMod_FunName = "__mod__";
+inline constexpr const char *overloadingEqual_FunName = "__equal__";
+
 static uint32_t hashObj(Obj *obj)
 {
     uint32_t hash = 2166136261U;
@@ -46,6 +53,7 @@ public:
     bool isMarked = false;
     uint32_t hash = hashObj(this);
     Obj *next = nullptr;
+    GC *gc = nullptr;
 
     virtual ~Obj() = default;
 
@@ -57,7 +65,7 @@ public:
 
     virtual String toRawString(ValueStack *outer) { return this->toRawString(); }
 
-    virtual bool getAttribute(ObjString *name, Value &value) { return false; };
+    virtual bool getAttribute(ObjString *name, Value &value) { return false; }
 
     virtual bool getElement(Value k, Value &v, GC *gc) { return false; };
 
@@ -66,6 +74,8 @@ public:
     virtual Value createIterator(GC *gc) { return nil_val; }
 
     virtual Value copy(GC *gc) { return nil_val; }
+
+    virtual bool add(Value right) { return false; }
 
     virtual void blacken(GC *gc) = 0;
 

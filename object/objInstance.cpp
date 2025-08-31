@@ -13,6 +13,7 @@ ObjInstance::ObjInstance(ObjClass *_klass, GC *_gc)
     , fields{_gc}
 {
     type = objType::INSTANCE;
+    gc = _gc;
 }
 
 ObjInstance::~ObjInstance() = default;
@@ -45,6 +46,12 @@ String ObjInstance::toString()
 String ObjInstance::toRawString()
 {
     return format("<{} instance>", klass->name->chars);
+}
+
+bool ObjInstance::add(Value right)
+{
+    Value tmp = nil_val;
+    return getAttribute(newObjString(overloadingAdd_FunName, gc), tmp);
 }
 
 void ObjInstance::blacken(GC *gc)

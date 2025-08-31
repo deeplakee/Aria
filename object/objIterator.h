@@ -12,8 +12,8 @@ class ObjMap;
 class ObjIterator : public Obj
 {
 public:
-    ObjIterator() =delete;
-    explicit ObjIterator(Iterator *iter);
+    ObjIterator() = delete;
+    explicit ObjIterator(Iterator *iter, GC *_gc);
     ~ObjIterator() override;
 
     String toString() override;
@@ -38,11 +38,11 @@ inline ObjIterator *as_objIterator(Value value)
     return dynamic_cast<ObjIterator *>(as_obj(value));
 }
 
-ObjIterator *newObjIterator(Iterator *iter,GC *gc);
+ObjIterator *newObjIterator(Iterator *iter, GC *gc);
 
-ObjIterator *newObjIterator(ObjList *list,GC *gc);
+ObjIterator *newObjIterator(ObjList *list, GC *gc);
 
-ObjIterator *newObjIterator(ObjMap *map,GC *gc);
+ObjIterator *newObjIterator(ObjMap *map, GC *gc);
 
 ObjIterator *newObjIterator(ObjString *str, GC *gc);
 

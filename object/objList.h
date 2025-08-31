@@ -13,10 +13,10 @@ class ObjList : public Obj
 {
 public:
     ObjList() = delete;
-    explicit ObjList(GC *gc);
-    ObjList(int count, ValueStack *stack, GC *gc);
-    ObjList(int begin, int end, ValueArray *other, GC *gc);
-    ObjList(ValueArray *_list, GC *gc);
+    explicit ObjList(GC *_gc);
+    ObjList(int count, ValueStack *stack, GC *_gc);
+    ObjList(int begin, int end, ValueArray *other, GC *_gc);
+    ObjList(ValueArray *_list, GC *_gc);
     ~ObjList() override;
 
     bool getAttribute(ObjString *name, Value &value) override;

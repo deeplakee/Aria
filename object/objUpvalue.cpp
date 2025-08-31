@@ -10,10 +10,10 @@ ObjUpvalue::ObjUpvalue(Value *_location, GC *_gc)
     , nextUpvalue{nullptr}
 {
     type = objType::UPVALUE;
+    gc = _gc;
 }
 
 ObjUpvalue::~ObjUpvalue() = default;
-
 
 String ObjUpvalue::toString()
 {
