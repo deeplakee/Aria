@@ -19,7 +19,7 @@ public:
     Value copy(GC *gc) override;
     String toString() override;
     String toRawString() override;
-    bool add(Value right) override;
+    bool addable(Value right) override;
     void blacken(GC *gc) override;
 
     ObjClass *klass;

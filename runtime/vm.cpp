@@ -591,7 +591,7 @@ interpretResult VM::run()
                 double num_a = as_number(a);
                 stack.pop_n(2);
                 stack.push(number_val(num_a + num_b));
-            } else if (is_obj(a) && as_obj(a)->add(b)) {
+            } else if (is_obj(a) && as_obj(a)->addable(b)) {
                 invoke(newObjString(overloadingAdd_FunName, gc), 1);
                 frame = &frames[frameCount - 1];
             } else {

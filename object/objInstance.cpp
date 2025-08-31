@@ -48,7 +48,7 @@ String ObjInstance::toRawString()
     return format("<{} instance>", klass->name->chars);
 }
 
-bool ObjInstance::add(Value right)
+bool ObjInstance::addable(Value right)
 {
     Value tmp = nil_val;
     return getAttribute(newObjString(overloadingAdd_FunName, gc), tmp);

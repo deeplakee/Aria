@@ -1,5 +1,6 @@
 #include "objList.h"
 
+#include "util/util.h"
 #include "memory/gc.h"
 #include "objIterator.h"
 #include "objNativeFn.h"

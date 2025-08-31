@@ -329,7 +329,7 @@ String ObjString::toRawString()
     return String{chars};
 }
 
-bool ObjString::add(Value right)
+bool ObjString::addable(Value right)
 {
     if (likely(is_objString(right))) {
         return true;

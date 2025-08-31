@@ -44,13 +44,6 @@ using Tuple = std::tuple<Args...>;
 inline constexpr const char* programName = "aria";
 inline constexpr const char* sourceSuffix = ".aria";
 
-#if defined(__GNUC__) || defined(__clang__)
-#define likely(x) __builtin_expect(!!(x), 1)
-#define unlikely(x) __builtin_expect(!!(x), 0)
-#else
-#define likely(x) (x)
-#define unlikely(x) (x)
-#endif
 
 #define DEBUG_TRACE_EXECUTION
 #define DEBUG_PRINT_COMPILED_CODE
@@ -91,7 +84,6 @@ inline constexpr const char* sourceSuffix = ".aria";
 #undef DEBUG_LOG_GC
 #endif
 
-#define DEBUG_PRINT_IMPORT_MODULE_PATH
 
 } // namespace aria
 

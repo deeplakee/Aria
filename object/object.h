@@ -75,7 +75,7 @@ public:
 
     virtual Value copy(GC *gc) { return nil_val; }
 
-    virtual bool add(Value right) { return false; }
+    virtual bool addable(Value right) { return false; }
 
     virtual void blacken(GC *gc) = 0;
 
