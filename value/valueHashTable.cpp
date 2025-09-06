@@ -245,9 +245,9 @@ Value ValueHashTable::getByIndex(int index, GC *gc)
     return obj_val(obj);
 }
 
-// isEmpty = true ;value = true_val  means a tombstone
-// isEmpty = true ;value = nil_val means empty
-// isEmpty = false means the KVPair has been used
+// isEmpty = true; value = true_val;  means a tombstone
+// isEmpty = true; value = nil_val;   means empty
+// isEmpty = false;                   means the KVPair has been used
 // else undefined
 KVPair *ValueHashTable::findDest(KVPair *f_entry, Value key, int f_capacity)
 {

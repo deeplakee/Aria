@@ -31,8 +31,6 @@ concept DerivedFromIterator = std::is_base_of_v<Iterator, T>;
 template<typename T>
 concept Trivial = std::is_trivial_v<T>;
 
-constexpr int GC_HEAP_GROW_FACTOR = 2;
-
 class GC
 {
 public:
@@ -40,10 +38,16 @@ public:
 
     ~GC();
 
+    static constexpr int GC_INITIAL_SIZE = 1024 * 1024;
+    static constexpr int GC_HEAP_GROW_FACTOR = 2;
+    static constexpr const char *errMsg = "Memory allocation failed\n";
+    static constexpr size_t errMsgLen = constexprStrlen(errMsg);
+
     size_t bytesAllocated;
     size_t nextGC;
 
     Obj *objList;
+    Obj *strList;
     Stack<Obj *> greyStack;
     ConStringPool *conStrPool;
 
@@ -59,9 +63,6 @@ public:
 
     Lock gcLock;
     bool inGC;
-
-    static constexpr const char *errMsg = "Memory allocation failed\n";
-    static constexpr size_t errMsgLen = constexprStrlen(errMsg);
 
     void bindVM(VM *vm);
 
@@ -109,8 +110,13 @@ public:
             fwrite(errMsg, sizeof(char), errMsgLen, stderr);
             exit(1);
         }
-        obj->next = objList;
-        objList = obj;
+        if constexpr (std::is_same_v<T, ObjString>) {
+            obj->next = strList;
+            strList = obj;
+        } else {
+            obj->next = objList;
+            objList = obj;
+        }
         return obj;
     }
 
@@ -193,7 +199,6 @@ public:
 
 private:
     void free_iterator(Iterator *pointer);
-
 
     void free_object(Obj *obj);
 

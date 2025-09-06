@@ -29,13 +29,13 @@ String ObjNativeFn::toString()
 {
     if (name == nullptr)
         return String{"<nativeFn anonymous>"};
-    return format("<nativeFn {}>", name->chars);
+    return format("<nativeFn {}>", name->C_str_ref());
 }
 String ObjNativeFn::toRawString()
 {
     if (name == nullptr)
         return String{"<nativeFn anonymous>"};
-    return format("<nativeFn {}>", name->chars);
+    return format("<nativeFn {}>", name->C_str_ref());
 }
 
 void ObjNativeFn::blacken(GC *gc)

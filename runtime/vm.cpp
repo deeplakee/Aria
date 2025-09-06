@@ -208,7 +208,7 @@ bool VM::invoke(ObjString *name, int argCount)
         }
     }
     runtimeError(
-        format("'{}' object has not attribute '{}'.", valueTypeString(receiver), name->chars));
+        format("'{}' object has not attribute '{}'.", valueTypeString(receiver), name->C_str_ref()));
     return false;
 }
 
@@ -444,7 +444,7 @@ interpretResult VM::run()
         case opCode::DEF_GLOBAL: {
             ObjString *name = read_objString(frame);
             if (unlikely(!chunk->globalVarTable->insert(obj_val(name), stack.peek()))) {
-                return runtimeError(format("Existed variable '{}'.", name->chars));
+                return runtimeError(format("Existed variable '{}'.", name->C_str_ref()));
             }
             stack.pop();
             break;
@@ -455,7 +455,7 @@ interpretResult VM::run()
             Value value = nil_val;
             if (!chunk->globalVarTable->get(name, value)) {
                 if (unlikely(!nativeVarTable->get(name, value))) {
-                    return runtimeError(format("Undefined variable '{}'.", objName->chars));
+                    return runtimeError(format("Undefined variable '{}'.", objName->C_str_ref()));
                 }
             }
             stack.push(value);
@@ -465,7 +465,7 @@ interpretResult VM::run()
             ObjString *name = read_objString(frame);
             if (likely(chunk->globalVarTable->insert(obj_val(name), stack.peek()))) {
                 chunk->globalVarTable->remove(obj_val(name));
-                return runtimeError(format("Undefined variable '{}'.", name->chars));
+                return runtimeError(format("Undefined variable '{}'.", name->C_str_ref()));
             }
             break;
         }
@@ -481,7 +481,7 @@ interpretResult VM::run()
                 return runtimeError(format(
                     "'{}' object has no attribute '{}'.",
                     valueTypeString(stack.peek()),
-                    name->chars));
+                    name->C_str_ref()));
             }
 
             value = bindMethodIfNeeded(stack.peek(), value);
@@ -663,7 +663,7 @@ interpretResult VM::run()
             break;
         }
         case opCode::PRINT: {
-            cout << valueString(stack.pop()) << '\n';
+            cout << valueString(stack.pop());
             break;
         }
         case opCode::NOP:
@@ -770,7 +770,7 @@ interpretResult VM::run()
             ObjClass *superKlass = as_objInstance(instance)->klass->superKlass;
             Value superMethod = nil_val;
             if (unlikely(!superKlass->methods.get(obj_val(methodName), superMethod))) {
-                if (methodName->length == 4 && memcmp(methodName->chars, "init", 4) == 0
+                if (methodName->length == 4 && memcmp(methodName->C_str_ref(), "init", 4) == 0
                     && superKlass->initMethod != nullptr) {
                     superMethod = obj_val(superKlass->initMethod);
                 } else {
@@ -820,7 +820,7 @@ interpretResult VM::run()
             } else {
                 ObjFunction *imported = loadModule(absoluteModulePath, moduleName);
                 if (imported == nullptr) {
-                    return runtimeError(format("Error in import module '{}'", input->chars));
+                    return runtimeError(format("Error in import module '{}'", input->C_str_ref()));
                 }
                 stack.push(obj_val(imported));
                 module = newObjModule(imported, gc);
@@ -915,7 +915,7 @@ interpretResult VM::runtimeError(StringView msg) const
         const CallFrame *frame = &frames[i];
         const ObjFunction *function = frame->function;
         const size_t instruction = frame->ip - function->chunk->code - 1;
-        String name = function->name == nullptr ? "script" : function->name->chars;
+        const char* name = function->name == nullptr ? "script" : function->name->C_str_ref();
         cerr << format("[line {}] in {}", function->chunk->lines[static_cast<long>(instruction)], name)
              << endl;
     }

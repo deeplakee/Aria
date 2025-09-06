@@ -26,12 +26,12 @@ bool ObjModule::getAttribute(ObjString *name, Value &value)
 
 String ObjModule::toString()
 {
-    return format("<module {}>", name->toString());
+    return format("<module {}>", name->C_str_ref());
 }
 
 String ObjModule::toRawString()
 {
-    return format("<module {}>", name->toRawString());
+    return format("<module {}>", name->C_str_ref());
 }
 
 void ObjModule::blacken(GC *gc)

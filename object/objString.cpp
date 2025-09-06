@@ -33,7 +33,7 @@ static Value builtin_at(int argCount, Value *args, GC *gc)
     if (unlikely(index < 0 || index >= objstr->length)) {
         throw RuntimeException("index out of range");
     }
-    char a = objstr->chars[index];
+    char a = objstr->C_str_ref()[index];
     return obj_val(newObjString(a, gc));
 }
 
@@ -67,22 +67,22 @@ static Value builtin_substr(int argCount, Value *args, GC *gc)
         throw RuntimeException("start index should be smaller than end index");
     }
 
-    ObjString *str = newObjString(objstr->chars, end - start, gc);
+    ObjString *str = newObjString(objstr->C_str(), end - start, gc);
     return obj_val(str);
 }
 
 static Value builtin_findstr(int argCount, Value *args, GC *gc)
 {
-    ObjString *objstr = as_objString(args[-1]);
+    const ObjString *objstr = as_objString(args[-1]);
     if (!is_objString(args[0])) {
         throw RuntimeException("argument must be a string");
     }
-    ObjString *substr = as_objString(args[0]);
-    char *result = strstr(objstr->chars, substr->chars);
+    const ObjString *substr = as_objString(args[0]);
+    const char *result = strstr(objstr->C_str_ref(), substr->C_str_ref());
     if (result == nullptr) {
         return number_val(-1);
     }
-    return number_val(static_cast<double>(result - objstr->chars));
+    return number_val(static_cast<double>(result - objstr->C_str_ref()));
 }
 
 static Value builtin_concat(int argCount, Value *args, GC *gc)
@@ -92,7 +92,7 @@ static Value builtin_concat(int argCount, Value *args, GC *gc)
         throw RuntimeException("argument must be a string");
     }
     const ObjString *b = as_objString(args[0]);
-    ObjString *concatenatedStr = concatenateString(a->chars, b->chars, gc);
+    ObjString *concatenatedStr = concatenateString(a, b, gc);
     return obj_val(concatenatedStr);
 }
 
@@ -107,7 +107,7 @@ static Value builtin_startWith(int argCount, Value *args, GC *gc)
         return false_val;
     }
 
-    int result = memcmp(objstr->chars, substr->chars, substr->length) == 0;
+    int result = memcmp(objstr->C_str_ref(), substr->C_str_ref(), substr->length) == 0;
     return bool_val(result);
 }
 
@@ -122,9 +122,11 @@ static Value builtin_endWith(int argCount, Value *args, GC *gc)
         return false_val;
     }
 
-    int result
-        = memcmp(objstr->chars + objstr->length - substr->length, substr->chars, substr->length)
-          == 0;
+    int result = memcmp(
+                     objstr->C_str_ref() + objstr->length - substr->length,
+                     substr->C_str_ref(),
+                     substr->length)
+                 == 0;
     return bool_val(result);
 }
 
@@ -135,7 +137,7 @@ static Value builtin_reverse(int argCount, Value *args, GC *gc)
     char *newStr = gc->allocate_array<char>(length + 1);
     newStr[length] = '\0';
     for (int i = 0; i < length; i++) {
-        newStr[i] = objstr->chars[length - i - 1];
+        newStr[i] = objstr->C_str_ref()[length - i - 1];
     }
     ObjString *newStrObj = newObjStringFromRawCStr(newStr, length, gc);
     return obj_val(newStrObj);
@@ -148,7 +150,7 @@ static Value builtin_upper(int argCount, Value *args, GC *gc)
     char *newStr = gc->allocate_array<char>(length + 1);
     newStr[length] = '\0';
     for (int i = 0; i < length; i++) {
-        newStr[i] = static_cast<char>(toupper(objstr->chars[i]));
+        newStr[i] = static_cast<char>(toupper(objstr->C_str_ref()[i]));
     }
     ObjString *newStrObj = newObjStringFromRawCStr(newStr, length, gc);
     return obj_val(newStrObj);
@@ -161,7 +163,7 @@ static Value builtin_lower(int argCount, Value *args, GC *gc)
     char *newStr = gc->allocate_array<char>(length + 1);
     newStr[length] = '\0';
     for (int i = 0; i < length; i++) {
-        newStr[i] = static_cast<char>(tolower(objstr->chars[i]));
+        newStr[i] = static_cast<char>(tolower(objstr->C_str_ref()[i]));
     }
     ObjString *newStrObj = newObjStringFromRawCStr(newStr, length, gc);
     return obj_val(newStrObj);
@@ -170,11 +172,11 @@ static Value builtin_lower(int argCount, Value *args, GC *gc)
 static Value builtin_trim(int argCount, Value *args, GC *gc)
 {
     const ObjString *objstr = as_objString(args[-1]);
-    const char *start = objstr->chars;
+    const char *start = objstr->C_str_ref();
     while (*start && isspace(*start)) {
         start++;
     }
-    const char *end = objstr->chars + objstr->length - 1;
+    const char *end = objstr->C_str_ref() + objstr->length - 1;
     while (end > start && std::isspace(*end)) {
         end--;
     }
@@ -189,11 +191,11 @@ static Value builtin_trim(int argCount, Value *args, GC *gc)
 static Value builtin_ltrim(int argCount, Value *args, GC *gc)
 {
     const ObjString *objstr = as_objString(args[-1]);
-    const char *start = objstr->chars;
+    const char *start = objstr->C_str_ref();
     while (*start && isspace(*start)) {
         start++;
     }
-    const char *end = objstr->chars + objstr->length - 1;
+    const char *end = objstr->C_str_ref() + objstr->length - 1;
     size_t length = end - start + 1;
     char *newStr = gc->allocate_array<char>(length + 1);
     newStr[length] = '\0';
@@ -205,8 +207,8 @@ static Value builtin_ltrim(int argCount, Value *args, GC *gc)
 static Value builtin_rtrim(int argCount, Value *args, GC *gc)
 {
     const ObjString *objstr = as_objString(args[-1]);
-    const char *start = objstr->chars;
-    const char *end = objstr->chars + objstr->length - 1;
+    const char *start = objstr->C_str_ref();
+    const char *end = objstr->C_str_ref() + objstr->length - 1;
     while (end > start && std::isspace(*end)) {
         end--;
     }
@@ -220,7 +222,7 @@ static Value builtin_rtrim(int argCount, Value *args, GC *gc)
 
 static Value builtin_split(int argCount, Value *args, GC *gc)
 {
-    const ObjString *src = as_objString(args[-1]);
+    ObjString *src = as_objString(args[-1]);
     if (!is_objString(args[0])) {
         throw RuntimeException("argument must be a string");
     }
@@ -228,8 +230,8 @@ static Value builtin_split(int argCount, Value *args, GC *gc)
         return obj_val(newObjList(gc));
     }
     const ObjString *delim = as_objString(args[0]);
-    const char *srcStr = src->chars;
-    const char *delimStr = delim->chars;
+    const char *srcStr = src->C_str_ref();
+    const char *delimStr = delim->C_str_ref();
     ObjList *objlist = newObjList(gc);
     gc->cache(obj_val(objlist));
 
@@ -244,7 +246,7 @@ static Value builtin_split(int argCount, Value *args, GC *gc)
         }
     } else {
         const size_t delim_len = strlen(delimStr);
-        char *start = src->chars;
+        char *start = src->C_str();
         char *end = strstr(start, delimStr);
 
         while (end != nullptr) {
@@ -282,13 +284,45 @@ static Value builtin___add__(int argCount, Value *args, GC *gc)
 
 ValueHashTable *ObjString::builtinMethod = nullptr;
 
-ObjString::ObjString(char *_chars, size_t _length, uint32_t _hash, GC *_gc)
-    : chars{_chars}
-    , length{_length}
+ObjString::ObjString(char *_chars, size_t _length, uint32_t _hash, bool _ownChars, GC *_gc)
+    : length{_length}
 {
     type = objType::STRING;
     gc = _gc;
     hash = _hash;
+    if (length <= SHORT_CAPACITY) {
+        isLong = false;
+        memcpy(shortChars, _chars, length);
+        if (_ownChars) {
+            gc->free_array<char>(_chars, length + 1);
+        }
+    } else {
+        isLong = true;
+        if (_ownChars) {
+            longChars = _chars;
+        } else {
+            longChars = gc->allocate_array<char>(length + 1);
+            memcpy(longChars, _chars, length);
+            longChars[length] = '\0';
+        }
+    }
+}
+
+ObjString::ObjString(const char *_chars, size_t _length, uint32_t _hash, GC *_gc)
+    : length{_length}
+{
+    type = objType::STRING;
+    gc = _gc;
+    hash = _hash;
+    if (length <= SHORT_CAPACITY) {
+        isLong = false;
+        memcpy(shortChars, _chars, length);
+    } else {
+        isLong = true;
+        longChars = gc->allocate_array<char>(length + 1);
+        memcpy(longChars, _chars, length);
+        longChars[length] = '\0';
+    }
 }
 
 ObjString::~ObjString() = default;
@@ -310,7 +344,7 @@ bool ObjString::getElement(Value k, Value &v, GC *gc)
     if (unlikely(index < 0 || index >= length)) {
         throw RuntimeException("index out of range");
     }
-    char a = chars[index];
+    char a = C_str_ref()[index];
     v = obj_val(newObjString(a, gc));
     return true;
 }
@@ -322,11 +356,11 @@ Value ObjString::createIterator(GC *gc)
 
 String ObjString::toString()
 {
-    return String{chars};
+    return String{C_str_ref()};
 }
 String ObjString::toRawString()
 {
-    return String{chars};
+    return String{C_str_ref()};
 }
 
 bool ObjString::addable(Value right)
@@ -378,13 +412,7 @@ ObjString *newObjString(const String &str, GC *gc)
     ObjString *interned = gc->getStr(str.c_str(), length, hash);
     if (interned != nullptr)
         return interned;
-#ifdef DEBUG_TRACE_STRING_OBJECT_CREATE
-    print("newObjStr: {} length: {} hash: {} gc: {:p}\n", str, length, hash, toVoidPtr(gc));
-#endif
-    char *newStr = gc->allocate_array<char>(length + 1);
-    memcpy(newStr, str.c_str(), length);
-    newStr[length] = '\0';
-    ObjString *obj = gc->allocate_object<ObjString>(newStr, length, hash, gc);
+    ObjString *obj = gc->allocate_object<ObjString>(str.c_str(), length, hash, gc);
 #ifdef DEBUG_LOG_GC
     print("{:p} allocate {} for ObjString\n", toVoidPtr(obj), sizeof(ObjString));
 #endif
@@ -400,13 +428,7 @@ ObjString *newObjString(const char *str, GC *gc)
     ObjString *interned = gc->getStr(str, length, hash);
     if (interned != nullptr)
         return interned;
-#ifdef DEBUG_TRACE_STRING_OBJECT_CREATE
-    print("newObjStr: {} length: {} hash: {} gc: {:p}\n", str, length, hash, toVoidPtr(gc));
-#endif
-    char *newStr = gc->allocate_array<char>(length + 1);
-    memcpy(newStr, str, length);
-    newStr[length] = '\0';
-    ObjString *obj = gc->allocate_object<ObjString>(newStr, length, hash, gc);
+    ObjString *obj = gc->allocate_object<ObjString>(str, length, hash, gc);
 #ifdef DEBUG_LOG_GC
     print("{:p} allocate {} for ObjString\n", toVoidPtr(obj), sizeof(ObjString));
 #endif
@@ -422,14 +444,10 @@ ObjString *newObjString(char ch, GC *gc)
     ObjString *interned = gc->getStr(&ch, length, hash);
     if (interned != nullptr)
         return interned;
-#ifdef DEBUG_TRACE_STRING_OBJECT_CREATE
-    print("newObjStrFromChar: {} length: {} hash: {} gc: {:p}\n", ch, length, hash, toVoidPtr(gc));
-#endif
-
     char *newStr = gc->allocate_array<char>(length + 1);
     newStr[0] = ch;
     newStr[length] = '\0';
-    ObjString *obj = gc->allocate_object<ObjString>(newStr, length, hash, gc);
+    ObjString *obj = gc->allocate_object<ObjString>(newStr, length, hash, true, gc);
 #ifdef DEBUG_LOG_GC
     print("{:p} allocate {} for ObjString\n", toVoidPtr(obj), sizeof(ObjString));
 #endif
@@ -437,23 +455,14 @@ ObjString *newObjString(char ch, GC *gc)
     return obj;
 }
 
-ObjString *newObjString(char *c_str, size_t length, GC *gc)
+ObjString *newObjString(char *str, size_t length, GC *gc)
 {
-    uint32_t hash = hashString(c_str, length);
-    ObjString *interned = gc->getStr(c_str, length, hash);
+    uint32_t hash = hashString(str, length);
+    ObjString *interned = gc->getStr(str, length, hash);
     if (interned != nullptr) {
         return interned;
     }
-
-#ifdef DEBUG_TRACE_STRING_OBJECT_CREATE
-    print("newObjStrFromCStr: {} length: {} hash: {} gc: {:p}\n", c_str, length, hash, toVoidPtr(gc));
-#endif
-
-    char *newStr = gc->allocate_array<char>(length + 1);
-    memcpy(newStr, c_str, length);
-    newStr[length] = '\0';
-
-    ObjString *obj = gc->allocate_object<ObjString>(newStr, length, hash, gc);
+    ObjString *obj = gc->allocate_object<ObjString>(str, length, hash, false, gc);
 
 #ifdef DEBUG_LOG_GC
     print("{:p} allocate {} for ObjString\n", toVoidPtr(obj), sizeof(ObjString));
@@ -463,19 +472,15 @@ ObjString *newObjString(char *c_str, size_t length, GC *gc)
     return obj;
 }
 
-ObjString *newObjStringFromRawCStr(char *c_str, size_t length, GC *gc)
+ObjString *newObjStringFromRawCStr(char *str, size_t length, GC *gc)
 {
-    uint32_t hash = hashString(c_str, length);
-    ObjString *interned = gc->getStr(c_str, length, hash);
+    uint32_t hash = hashString(str, length);
+    ObjString *interned = gc->getStr(str, length, hash);
     if (interned != nullptr) {
-        gc->free_array<char>(c_str, length + 1);
+        gc->free_array<char>(str, length + 1);
         return interned;
     }
-
-#ifdef DEBUG_TRACE_STRING_OBJECT_CREATE
-    print("newObjStrFromCStr: {} length: {} hash: {} gc: {:p}\n", c_str, length, hash, toVoidPtr(gc));
-#endif
-    ObjString *obj = gc->allocate_object<ObjString>(c_str, length, hash, gc);
+    ObjString *obj = gc->allocate_object<ObjString>(str, length, hash, true, gc);
 
 #ifdef DEBUG_LOG_GC
     print("{:p} allocate {} for ObjString\n", toVoidPtr(obj), sizeof(ObjString));
@@ -491,50 +496,17 @@ ObjString *concatenateString(const ObjString *a, const ObjString *b, GC *gc)
     if (length < a->length) {
         throw RuntimeException{"you are trying to concatenate two too long string"};
     }
-    char *new_c_str = gc->allocate_array<char>(length + 1);
-    memcpy(new_c_str, a->chars, a->length);
-    memcpy(new_c_str + a->length, b->chars, b->length);
-    new_c_str[length] = '\0';
-    uint32_t hash = hashString(new_c_str, length);
-    ObjString *interned = gc->getStr(new_c_str, length, hash);
+    char *newStr = gc->allocate_array<char>(length + 1);
+    memcpy(newStr, a->C_str_ref(), a->length);
+    memcpy(newStr + a->length, b->C_str_ref(), b->length);
+    newStr[length] = '\0';
+    uint32_t hash = hashString(newStr, length);
+    ObjString *interned = gc->getStr(newStr, length, hash);
     if (interned != nullptr) {
-        gc->free_array<char>(new_c_str, length + 1);
+        gc->free_array<char>(newStr, length + 1);
         return interned;
     }
-#ifdef DEBUG_TRACE_STRING_OBJECT_CREATE
-    print("newObjStr: {} length: {} hash: {} gc: {}\n", new_c_str, length, hash, toVoidPtr(gc));
-#endif
-    ObjString *obj = gc->allocate_object<ObjString>(new_c_str, length, hash, gc);
-#ifdef DEBUG_LOG_GC
-    print("{:p} allocate {} for ObjString\n", toVoidPtr(obj), sizeof(ObjString));
-#endif
-
-    gc->insertStr(obj);
-    return obj;
-}
-
-ObjString *concatenateString(const char *a, const char *b, GC *gc)
-{
-    size_t a_length = strlen(a);
-    size_t b_length = strlen(b);
-    const size_t length = a_length + b_length;
-    if (length < a_length) {
-        throw RuntimeException{"you are trying to concatenate two too long string"};
-    }
-    char *new_c_str = gc->allocate_array<char>(length + 1);
-    memcpy(new_c_str, a, a_length);
-    memcpy(new_c_str + a_length, b, b_length);
-    new_c_str[length] = '\0';
-    uint32_t hash = hashString(new_c_str, length);
-    ObjString *interned = gc->getStr(new_c_str, length, hash);
-    if (interned != nullptr) {
-        gc->free_array<char>(new_c_str, length + 1);
-        return interned;
-    }
-#ifdef DEBUG_TRACE_STRING_OBJECT_CREATE
-    print("newObjStr: {} length: {} hash: {} gc: {}\n", new_c_str, length, hash, toVoidPtr(gc));
-#endif
-    ObjString *obj = gc->allocate_object<ObjString>(new_c_str, length, hash, gc);
+    ObjString *obj = gc->allocate_object<ObjString>(newStr, length, hash, true, gc);
 #ifdef DEBUG_LOG_GC
     print("{:p} allocate {} for ObjString\n", toVoidPtr(obj), sizeof(ObjString));
 #endif

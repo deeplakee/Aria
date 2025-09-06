@@ -40,12 +40,12 @@ Value ObjInstance::copy(GC *gc)
 
 String ObjInstance::toString()
 {
-    return format("<{} instance>", klass->name->chars);
+    return format("<{} instance>", klass->name->C_str_ref());
 }
 
 String ObjInstance::toRawString()
 {
-    return format("<{} instance>", klass->name->chars);
+    return format("<{} instance>", klass->name->C_str_ref());
 }
 
 bool ObjInstance::addable(Value right)

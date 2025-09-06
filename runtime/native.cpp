@@ -90,7 +90,7 @@ Value Native::_num_(int argCount, Value *args, GC *gc)
         throw RuntimeException("argument must be a string");
     }
     try {
-        return number_val(std::stod(as_objString(args[0])->chars));
+        return number_val(std::stod(as_objString(args[0])->C_str_ref()));
     } catch (const std::exception &e) {
         return nil_val;
     }
@@ -102,10 +102,10 @@ Value Native::_bool_(int argCount, Value *args, GC *gc)
         throw RuntimeException("argument must be a string");
     }
     ObjString *str = as_objString(args[0]);
-    if (str->length == 4 && memcmp(str->chars, "true", 4) == 0) {
+    if (str->length == 4 && memcmp(str->C_str_ref(), "true", 4) == 0) {
         return true_val;
     }
-    if (str->length == 5 && memcmp(str->chars, "false", 5) == 0) {
+    if (str->length == 5 && memcmp(str->C_str_ref(), "false", 5) == 0) {
         return false_val;
     }
     throw RuntimeException("Invalid boolean string");

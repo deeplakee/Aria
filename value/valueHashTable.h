@@ -8,7 +8,6 @@ class ObjString;
 class ObjList;
 class ValueArray;
 class GC;
-#define TABLE_MAX_LOAD 0.75
 
 struct KVPair
 {
@@ -73,6 +72,8 @@ public:
     Value getByIndex(int index, GC *gc);
 
 private:
+    static constexpr double TABLE_MAX_LOAD = 0.75;
+
     int true_count;
     int count;
     int capacity;

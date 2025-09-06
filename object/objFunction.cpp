@@ -56,7 +56,7 @@ ObjFunction::~ObjFunction() = default;
 
 String ObjFunction::toString()
 {
-    String f_name = String{name == nullptr ? "anonymous" : name->chars};
+    String f_name = String{name == nullptr ? "anonymous" : name->C_str_ref()};
     if (funType == FunctionType::SCRIPT) {
         return format("<module {}>", f_name);
     }
@@ -65,7 +65,7 @@ String ObjFunction::toString()
 
 String ObjFunction::toRawString()
 {
-    String f_name = String{name == nullptr ? "anonymous" : name->chars};
+    String f_name = String{name == nullptr ? "anonymous" : name->C_str_ref()};
     if (funType == FunctionType::SCRIPT) {
         return format("<module {}>", f_name);
     }

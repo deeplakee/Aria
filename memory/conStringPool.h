@@ -9,8 +9,6 @@ class ObjString;
 
 using ObjStringPtr = ObjString*;
 
-#define TABLE_MAX_LOAD 0.75
-
 class ConStringPool
 {
 public:
@@ -22,9 +20,14 @@ public:
 
     ObjStringPtr get(const char *chars, size_t length, uint32_t hash);
 
+    bool remove(ObjString *obj);
+
     void removeWhite();
 
 private:
+    static constexpr double TABLE_MAX_LOAD = 0.75;
+    inline static ObjStringPtr TOMBSTONE = reinterpret_cast<ObjString*>(-1);
+
     int count;
     int capacity;
     ObjStringPtr *table;

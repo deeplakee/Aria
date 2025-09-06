@@ -21,9 +21,10 @@ extern const char *objTypeStr[];
 
 GC::GC()
     : bytesAllocated{0}
-    , nextGC{1024 * 1024}
+    , nextGC{GC_INITIAL_SIZE}
     , inGC{false}
     , objList{nullptr}
+    , strList{nullptr}
     , conStrPool{nullptr}
     , stack{nullptr}
     , tempVars{new ValueStack}
@@ -174,7 +175,7 @@ void GC::collectGarbage()
 
     traceReferences();
 
-    conStrPool->removeWhite();
+    // conStrPool->removeWhite();
 
     sweep();
 
@@ -241,8 +242,8 @@ void GC::free_object(Obj *obj)
     }
     case objType::STRING: {
         ObjString *objStr = dynamic_cast<ObjString *>(obj);
-        if (objStr->chars != nullptr) {
-            free_array<char>(objStr->chars, objStr->length + 1);
+        if (objStr->isLong && objStr->longChars != nullptr) {
+            free_array<char>(objStr->longChars, objStr->length + 1);
         }
         bytesAllocated -= sizeof(ObjString);
         delete objStr;
@@ -284,6 +285,11 @@ void GC::free_objects()
         Obj *next = objList->next;
         free_object(objList);
         objList = next;
+    }
+    while (strList != nullptr) {
+        Obj *next = strList->next;
+        free_object(strList);
+        strList = next;
     }
 }
 } // namespace aria

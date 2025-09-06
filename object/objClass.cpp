@@ -20,12 +20,12 @@ ObjClass::~ObjClass() = default;
 
 String ObjClass::toString()
 {
-    return format("<class {}>", name->chars);
+    return format("<class {}>", name->C_str_ref());
 }
 
 String ObjClass::toRawString()
 {
-    return format("<class {}>", name->chars);
+    return format("<class {}>", name->C_str_ref());
 }
 
 void ObjClass::blacken(GC *gc)

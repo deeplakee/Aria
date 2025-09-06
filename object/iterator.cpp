@@ -106,7 +106,7 @@ Value StringIterator::next(GC *gc)
     if (!hasNext()) {
         return nil_val;
     }
-    return obj_val(newObjString(obj->chars[nextIndex++], gc));
+    return obj_val(newObjString(obj->C_str_ref()[nextIndex++], gc));
 }
 
 } // namespace aria

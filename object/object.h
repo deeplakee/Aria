@@ -52,7 +52,11 @@ public:
     objType type = objType::BASE;
     bool isMarked = false;
     uint32_t hash = hashObj(this);
-    Obj *next = nullptr;
+    union
+    {
+        Obj *next = nullptr;
+        size_t refCount;
+    };
     GC *gc = nullptr;
 
     virtual ~Obj() = default;

@@ -184,7 +184,7 @@ void ClassDeclNode::generateByteCode(FunctionContext *currentFunction)
         ASTNode *rawMethodNodePtr = method.get();
         int defMethodLine = rawMethodNodePtr->line;
         ObjString *methodName = generateByteCodeForMethod(rawMethodNodePtr, currentFunction);
-        if (methodName->length == 4 && memcmp(methodName->chars, "init", 4) == 0) {
+        if (methodName->length == 4 && memcmp(methodName->C_str_ref(), "init", 4) == 0) {
             chunk->writeCode(opCode::MAKE_INIT_METHOD, defMethodLine);
         } else {
             chunk->writeCode(opCode::MAKE_METHOD, defMethodLine);
