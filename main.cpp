@@ -1,3 +1,5 @@
+static_assert(sizeof(void*) == 8, "This program requires a 64-bit system.");
+
 #include "common.h"
 #include "runtime/interpretResult.h"
 #include "runtime/vm.h"

@@ -3,9 +3,9 @@
 
 #include "common.h"
 
-#include <utility>
 #include <cctype>
 #include <concepts>
+#include <utility>
 
 namespace aria {
 
@@ -95,6 +95,16 @@ void print(const String &fmt, Args &&...args)
 
     // Use std::cout print formatted string
     cout << formatted_str;
+}
+
+template<typename... Args>
+void print(std::ostream &os, const String &fmt, Args &&...args)
+{
+    // Use std::vformat to format the string
+    String formatted_str = std::vformat(fmt, std::make_format_args(args...));
+
+    // Use ostream object print formatted string
+    os << formatted_str;
 }
 
 template<typename... Args>

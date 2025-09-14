@@ -1,0 +1,14 @@
+fun f1(){
+	println("fun1");
+	throw "from fun1";
+}
+fun f2(){
+	println("fun2");
+	f1();
+}
+
+try{
+    f2();
+}catch(e){
+    println("catch <{}>", e);
+}

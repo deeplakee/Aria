@@ -1,7 +1,7 @@
 #include "disassembler.h"
 
-#include "util/util.h"
 #include "object/objFunction.h"
+#include "util/util.h"
 
 namespace aria {
 void Disassembler::disassembleChunk(const Chunk &chunk, const char *name)

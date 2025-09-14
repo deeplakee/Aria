@@ -1,0 +1,16 @@
+fun createCounter() {
+  var count = 0; # 这个变量在外部无法直接访问
+  fun counter(){
+    count += 1;
+    return count;
+  }
+  return counter;
+}
+
+# 创建一个计数器
+var counter = createCounter();
+
+# 每次调用counter都会增加并返回count的值
+println(counter()); // 输出: 1
+println(counter()); // 输出: 2
+println(counter()); // 输出: 3
